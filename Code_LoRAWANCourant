@@ -1,9 +1,9 @@
 #include <HardwareSerial.h>
 
 // Paramètres du capteur
-const int currentPin = 5; // GPIO5 où est connecté la sortie du capteur de courant
-const float GAIN = 0.1; // Sensibilité du capteur en V/A (à ajuster selon le capteur)
-float OFFSET = 0.0; // Tension d'offset du capteur en V (à ajuster manuellement)
+const int currentPin = 5; 
+const float GAIN = 0.1; 
+float OFFSET = 0.0; 
 
 // Déclarations des fonctions
 float readAverageVoltage(int pin, int numSamples = 10);
@@ -17,12 +17,12 @@ HardwareSerial SerialLoRa(1);
 bool joined = false;
 
 void setup() {
-  Serial.begin(115200);  // Débogage sur le moniteur série
+  Serial.begin(115200);  
   Serial1.begin(115200, SERIAL_8N1, 37, 38);
   pinMode(36, OUTPUT);
   digitalWrite(36, HIGH);
   
-  analogReadResolution(12); // Résolution ADC (12 bits)
+  analogReadResolution(12); 
   OFFSET = calibrateOffset(currentPin);
 
   Serial.print("Offset calibré : ");
@@ -36,26 +36,25 @@ void setup() {
   sendATCommand("AT+APPEUI=334455BD44BBB333"); 
   sendATCommand("AT+APPKEY=81F2A0BFC0B95A3249D3AC9694E843CF"); 
 
-  // Configurer la région (par exemple, EU868 pour l'Europe)
-  sendATCommand("AT+NWM=1"); // Assurez-vous que le module est en mode LoRaWAN
-  sendATCommand("AT+DR=0"); // Configurez la région à EU868 (vérifiez que '0' correspond à votre région dans la documentation)
+  // Configurer la région 
+  sendATCommand("AT+NWM=1"); 
+  sendATCommand("AT+DR=0");
 
-  delay(1000); // Petite pause pour permettre au module de traiter les commandes
+  delay(1000); 
 
   sendATCommand("AT+JOIN");
   Serial.println("Commande JOIN envoyée");
 }
 
 void loop() {
-  // Lire et afficher toutes les réponses du module RAK3172
   reponse();
 
-  // Envoyer des données toutes les 10 secondes si le join est réussi
+
   static unsigned long lastSendTime = 0;
   if (joined && millis() - lastSendTime > 10000) {
     lastSendTime = millis();
     float voltage = readAverageVoltage(currentPin);
-    float current = (voltage - OFFSET) / GAIN; // Conversion en ampères (A)
+    float current = (voltage - OFFSET) / GAIN; 
 
     // Préparer et envoyer les données
     char buffer[50];
