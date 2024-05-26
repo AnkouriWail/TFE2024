@@ -1,0 +1,37 @@
+#include <Arduino.h>
+
+// Coefficients de Steinhart-Hart (Coefficients génériques pour NTC)
+const double A = 0.001129148;
+const double B = 0.000234125;
+const double C = 0.0000000876741;
+
+// Broche analogique pour la thermistance
+const int ThermistorPin = 7;  // Utilisez une broche appropriée pour l'ADC
+
+void setup() {
+  Serial.begin(115200);
+  analogReadResolution(12);  // 12 bits de résolution pour l'ESP32
+}
+
+void loop() {
+  int ADCValue = analogRead(ThermistorPin);
+  float voltage = (ADCValue / 4095.0) * 3.3;
+  float R = 10000 * ((3.3 / voltage) - 1);  // Calcul de la résistance avec R série de 10k Ohm
+
+  // Calcul de la température en Kelvin en utilisant la loi de Steinhart-Hart
+  double temperatureK = 1 / (A + B * log(R) + C * pow(log(R), 3));
+  double temperatureC = temperatureK - 273.15;  // Convertir en Celsius
+
+  // Affichage des résultats
+  Serial.print("Valeur ADC: ");
+  Serial.print(ADCValue);
+  Serial.print(", Tension: ");
+  Serial.print(voltage);
+  Serial.print(", Résistance: ");
+  Serial.print(R);
+  Serial.print(", Température: ");
+  Serial.print(temperatureC);
+  Serial.println(" °C");
+
+  delay(1000);
+}
