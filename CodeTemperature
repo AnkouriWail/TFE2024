@@ -16,7 +16,7 @@ void setup() {
 void loop() {
   int ADCValue = analogRead(ThermistorPin);
   float voltage = (ADCValue / 4095.0) * 3.3;
-  float R = 10000 * ((3.3 / voltage) - 1);  // Calcul de la résistance avec R série de 10k Ohm
+  float R = 40000 * ((3.3 / voltage) - 1);  
 
   // Calcul de la température en Kelvin en utilisant la loi de Steinhart-Hart
   double temperatureK = 1 / (A + B * log(R) + C * pow(log(R), 3));
