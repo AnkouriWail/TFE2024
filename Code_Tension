@@ -1,0 +1,27 @@
+#include <Arduino.h>
+ 
+const int adcPin = 4; // GPIO4
+ 
+void setup() {
+  Serial.begin(115200);
+  analogReadResolution(12); 
+  Serial.println("Démarrage du système de mesure de tension...");
+}
+ 
+void loop() {
+  int adcValue = analogRead(adcPin); 
+  float voltageOut = adcValue * (3.3 / 4095.0);
+ 
+ 
+  float voltageIn = (voltageOut - 2.5) / 0.025;
+ 
+  // Afficher les résultats
+  Serial.print("Valeur ADC: ");
+  Serial.print(adcValue);
+  Serial.print(" | Tension de sortie (V): ");
+  Serial.print(voltageOut, 3);
+  Serial.print(" | Tension d'entrée (V): ");
+  Serial.println(voltageIn, 3);
+ 
+  delay(1000); // Pause d'une seconde
+}
